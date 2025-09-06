@@ -1,17 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { getLinks } from './storage';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+export const generateShortcode = (length = 6) => {
+  const links = getLinks();
+  const exists = (code) => links.some(l => l.shortcode === code);
+  let code = '';
+  do {
+    code = Array.from({ length })
+      .map(() => CHARS[Math.floor(Math.random() * CHARS.length)])
+      .join('');
+  } while (exists(code));
+  return code;
+};
+
+export const isValidCustomShortcode = (s) => {
+  if (!s) return false;
+  return /^[A-Za-z0-9]{4,12}$/.test(s);
+};
